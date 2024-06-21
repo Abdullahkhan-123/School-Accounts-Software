@@ -46,16 +46,12 @@
                             <h4 class="card-title">
 
                                 <div class="row d-flex">
-                                
-
+                            
                                     <!-- export as print -->
-                                    <form method="post" action="">
+                                    <form method="post" action="{{ route('PrintLiabilityExpenseReport') }}">
                                         @csrf
-                                        <input type="hidden" name="Classprint" id="Classprint">
-                                        <input type="hidden" name="Sectionprint" id="Sectionprint">
-                                        <input type="hidden" name="Typeprint" id="Typeprint">
-                                        <input type="hidden" name="Campusprint" id="Campusprint">
-                                        <button class="btn btn-primary mb-2 mr-1" type="submit">Print</button>
+                                        <input type="hidden" name="datefilter" id="datefilter">                                    
+                                        <button class="btn btn-primary mb-2 mr-1" type="submit"> <i class="fa fa-print color-danger"></i> </button>
                                     </form>
                                     
                                 </div>
@@ -68,11 +64,9 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Expense Name</th>
+                                            <th scope="col">Head Of Expense</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Debit By</th>
-                                            <th scope="col">Acount Title</th>
-                                            <th scope="col">Acount Type</th>
                                             <th scope="col">Amount</th>
                                             <th class="col-4" scope="col">Description</th>
                                         </tr>
@@ -97,38 +91,21 @@
             // Button click event listener
             $('#fetchData').click(function() {
                 // Obtain values from form fields
-                const classId = $('#sel1').val(); // Class select field se value obtain karna
-                const sectionId = $('#sel2').val(); // Section select field se value obtain karna
-                const type = $('#sel3').val(); // Type select field se value obtain karna
-                const campus = $('#sel4').val(); // Campus select field se value obtain karna
+                const datefilter = $('#datefilter').val(); // Class select field se value obtain karna
 
                 const DateRange = $('#date_range').val();
                 // date-range
 
-                // Set hidden input values to export csv
-                $('#Class').val(classId);
-                $('#Section').val(sectionId);
-                $('#Type').val(type);
-                $('#Campus').val(campus);
-
-                // Set hidden input values to export pdf 
-                $('#Classpdf').val(classId);
-                $('#Sectionpdf').val(sectionId);
-                $('#Typepdf').val(type);
-                $('#Campuspdf').val(campus);
-
                 // Set hidden input values to export print 
-                $('#Classprint').val(classId);
-                $('#Sectionprint').val(sectionId);
-                $('#Typeprint').val(type);
-                $('#Campusprint').val(campus);
+                $('#datefilter').val(DateRange);
 
                 // AJAX request
                 $.ajax({
                     url: '/Search_Expense_Report', // Server-side route URL
                     method: 'GET',
                     data: {
-                        DateRange
+                        DateRange,
+                        datefilter
                     },
                     success: function(data) {
                         // Clear the existing table body
@@ -141,9 +118,7 @@
                                     <td>${index + 1}</td>
                                     <td> <span class="badge badge-success"> ${item.ExpenseName} </span> </td>
                                     <td>${item.Date}</td>
-                                    <td>${item.BankName}</td>
-                                    <td>${item.BankTitle}</td>
-                                    <td>${item.BankAccountType}</td>
+                                    <td>${item.BankName} - ${item.BankTitle} - ${item.BankAccountType}</td>                                    
                                     <td>${item.Amount}</td>
                                     <td>${item.Description}</td>
                                 </tr>

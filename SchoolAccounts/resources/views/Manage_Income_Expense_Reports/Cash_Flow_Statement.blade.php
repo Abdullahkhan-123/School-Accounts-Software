@@ -201,13 +201,10 @@
                         <h4 class="card-title">
                             <div class="row d-flex">                            
                                 <!-- export as print -->
-                                <form method="post" action="">
+                                <form method="post" action="{{ route('PrintCashFlowStatement') }}">
                                     @csrf
-                                    <input type="hidden" name="Classprint" id="Classprint">
-                                    <input type="hidden" name="Sectionprint" id="Sectionprint">
-                                    <input type="hidden" name="Typeprint" id="Typeprint">
-                                    <input type="hidden" name="Campusprint" id="Campusprint">
-                                    <button class="btn btn-primary mb-2 mr-1" type="submit">Print</button>
+                                    <input type="hidden" name="PrintFilterDate" id="PrintFilterDate">
+                                    <button class="btn btn-primary mb-2 mr-1" type="submit"> <i class="fa fa-print color-danger"></i> </button>                    
                                 </form>
                             </div>
                         </h4>
@@ -290,10 +287,17 @@ $(document).ready(function() {
     $('#fetchData').click(function() {
         const FilterData = $('#FilterData').val();
 
+        const PrintFilterDate = $('#PrintFilterDate').val();
+
+        $('#PrintFilterDate').val(FilterData);        
+
         $.ajax({
             url: '/Search_Cash_Flow_Statement',
             method: 'GET',
-            data: { FilterData: FilterData },
+            data: { 
+                FilterData: FilterData,
+                PrintFilterDate: PrintFilterDate
+             },
             success: function(data) {
                 const cashInflowsTbody = $('#cash-inflows-tbody');
                 const cashOutflowsTbody = $('#cash-outflows-tbody');

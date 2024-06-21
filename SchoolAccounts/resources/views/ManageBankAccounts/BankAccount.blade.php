@@ -83,16 +83,9 @@
                             
                                     <div class="row">
                                         <div class="col">
-                                            <label>Balance</label>
+                                            <label>Opening Balance</label>
                                             <input type="text" class="form-control mb-2" name="Balance"
                                                 placeholder="Balance" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col">
-                                            <label>Description</label>
-                                            <textarea class="form-control" name="Description"></textarea>
                                         </div>
                                     </div>
 

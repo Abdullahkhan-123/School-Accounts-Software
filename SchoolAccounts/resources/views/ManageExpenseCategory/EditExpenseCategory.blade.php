@@ -34,7 +34,7 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col">
-                                        <label class="sr-only">Admit Expense</label>
+                                        <label class="">Head Of Expense</label>
                                         <input type="text" class="form-control mb-2 admitClass" name="Expensecategory"
                                             placeholder="Admit Expense" value="{{ $ExpenceCategory->CategoryName }}" required>
                                     </div>

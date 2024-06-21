@@ -32,7 +32,7 @@
                         <div class="col-lg-3">
                             <div class="date-range-picker">
                                 <label>Filter Data</label>
-                                <select class="form-control" name="FilterData" id="FilterData" required>
+                                <select class="form-control" name="FilterDate" id="FilterDate" required>
                                     <option value="" selected disabled>Select Filter</option>                                            
                                     <option value="Last1Year">Last 1 Year</option>                                            
                                     <option value="Last2Years">Last 2 Years</option>                                            
@@ -49,16 +49,14 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Profit And Expense Statements</h4>
+                        <h4 class="card-title">Income And Expense Statements</h4>
                         <div class="row d-flex">                           
-                            <form method="post" action="">
+                            <form method="post" action="{{ route('PrintIncomeLossStatements') }}">
                                 @csrf
-                                <input type="hidden" name="Classprint" id="Classprint">
-                                <input type="hidden" name="Sectionprint" id="Sectionprint">
-                                <input type="hidden" name="Typeprint" id="Typeprint">
-                                <input type="hidden" name="Campusprint" id="Campusprint">
-                                <button class="btn btn-primary mb-2 mr-1" type="submit">Print</button>
-                            </form>                            
+                                <input type="hidden" name="PrintExpensecategory" id="PrintExpensecategory">
+                                <input type="hidden" name="PrintFilterDate" id="PrintFilterDate">
+                                <button class="btn btn-primary mb-2 mr-1" type="submit"> <i class="fa fa-print color-danger"></i> </button>
+                            </form>
                         </div>
                     </div>
                     <div class="card-body">
@@ -67,10 +65,8 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Expense Details</th>
-                                        <th scope="col">Bank Name</th>
-                                        <th scope="col">Bank Title</th>
-                                        <th scope="col">Bank Account Type</th>
+                                        <th scope="col">Head Of Expense</th>
+                                        <th scope="col">Debit By</th>                                        
                                         <th scope="col">Amount</th>
                                     </tr>
                                 </thead>
@@ -96,19 +92,20 @@
     $(document).ready(function() {
         $('#fetchData').click(function() {
             const ExpenseCategory = $('#ExpenseCategory').val();
-            const FilterData = $('#FilterData').val();
+            const FilterData = $('#FilterDate').val();
 
-            $('#Type').val(ExpenseCategory);
-            $('#Campus').val(FilterData);
-            $('#Typepdf').val(ExpenseCategory);
-            $('#Campuspdf').val(FilterData);
-            $('#Typeprint').val(ExpenseCategory);
-            $('#Campusprint').val(FilterData);
+            const PrintExpensecategory = $('#PrintExpensecategory').val();
+            const PrintFilterDate = $('#PrintFilterDate').val();
+
+            $('#PrintExpensecategory').val(ExpenseCategory);
+            $('#PrintFilterDate').val(FilterData);
 
             $.ajax({
                 url: '/Search_Profit_Loss_Statements',
                 method: 'GET',
                 data: {
+                    PrintExpensecategory,
+                    PrintFilterDate,
                     ExpenseCategory,
                     FilterData
                 },
@@ -159,10 +156,8 @@
                     $('table tbody').append(`
                         <tr>
                             <td></td>
-                            <td>Fees</td>
-                            <td>Collection</td>
-                            <td>Income</td>                            
                             <td></td>
+                            <td>Fees Collection Income</td>                            
                             <td>${profitData.totalAmount.toFixed(2)}</td>
                         </tr>
                     `);
@@ -184,9 +179,7 @@
                             <tr>
                                 <td>${index + 1}</td>
                                 <td>${item.ExpenseName}</td>
-                                <td>${item.BankName}</td>
-                                <td>${item.BankTitle}</td>
-                                <td>${item.BankAccountType}</td>
+                                <td>${item.BankName} - ${item.BankTitle} - ${item.BankAccountType}</td>                                
                                 <td>${item.totalAmount.toFixed(2)}</td>
                             </tr>
                         `);
@@ -206,16 +199,16 @@
                     // Append total amount and total profit in separate rows
                     $('table tbody').append(`
                         <tr>
-                            <td colspan="5" class="text-right font-weight-bold">Total Expense:</td>
+                            <td colspan="3" class="text-right font-weight-bold">Total Expense:</td>
                             <td>${totalAmount.toFixed(2)}</td>
                         </tr>
                         <tr>
-                            <td colspan="5" class="text-right font-weight-bold">Total Profit:</td>
+                            <td colspan="3" class="text-right font-weight-bold">Total Profit:</td>
                             <td>${totalProfit.toFixed(2)}</td>
                         </tr>
 
                         <tr>
-                            <td colspan="5" class="text-right font-weight-bold">Total Balance:</td>
+                            <td colspan="3" class="text-right font-weight-bold">Total Balance:</td>
                             <td>${totalProfit.toFixed(2) - totalAmount.toFixed(2)}</td>
                         </tr>
                     `);

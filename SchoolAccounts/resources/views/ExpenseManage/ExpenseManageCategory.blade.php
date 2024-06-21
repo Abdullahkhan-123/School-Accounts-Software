@@ -41,7 +41,7 @@
 
                                 <div class="row"> 
                                     <div class="col">
-                                        <label>Expense Category:</label>
+                                        <label>Head Of Expense:</label>
                                         <select class="form-control" name="ExpenseCategory" id="sel1" required>
                                             <option value="" selected disabled>Select</option>
 

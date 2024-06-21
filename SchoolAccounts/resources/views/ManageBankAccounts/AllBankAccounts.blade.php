@@ -35,9 +35,8 @@
                                             <th scope="col">Bank Name</th>
                                             <th scope="col">Title</th>
                                             <th scope="col">Account Type</th>
-                                            <th scope="col">Balance</th>
+                                            <th scope="col">Opening Balance</th>
                                             <th scope="col">Date</th>
-                                            <th scope="col">Description</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -54,8 +53,7 @@
                                             <td>{{ $BankAccount->Title }}</td>
                                             <td>{{ $BankAccount->AccountType }}</td>
                                             <td>{{ $BankAccount->Balance }}</td>
-                                            <td>{{ $BankAccount->Date }}</td>                                            
-                                            <td>{{ Str::words($BankAccount->Description, 5, '') }}</td>
+                                            <td>{{ $BankAccount->Date }}</td>
                                             <td>
                                                 <span>
                                                     <a href="{{ route('EditBankAccounts', $BankAccount->UniqueCode) }}" class="mr-4" data-toggle="tooltip" data-placement="top" title="Edit">

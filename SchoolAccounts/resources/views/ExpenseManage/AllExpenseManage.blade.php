@@ -22,10 +22,9 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">All Liability Expenses Details</h4>
-                            <h4 class="card-title">
-
+                            <h4 class="card-title">                            
+                                <button class="btn btn-primary mb-2"> <a href="{{ route('PrintAllLiabilityManageExpense') }}" class="text-decoration-none text-white"> <i class="fa fa-print color-danger"></i> </a> </button>
                                 <button class="btn btn-primary mb-2"> <a href="{{ route('ManageExpenseCategory') }}" class="text-decoration-none text-white">Add More</a> </button>
-
                             </h4>
                         </div>
                         <div class="card-body">
@@ -34,7 +33,8 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Expense Category</th>
+                                            <th scope="col">Invoice No</th>
+                                            <th scope="col">Head Of Expense</th>
                                             <th scope="col">Bank Account</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Amount</th>
@@ -49,7 +49,8 @@
                                         @foreach($ManageExpense as $Expense)
 
                                         <tr>
-                                            <td>{{ $LoopID++ }}</td>                                        
+                                            <td>{{ $LoopID++ }}</td>
+                                            <td>{{ $Expense->id }}</td>
                                             <td>{{ $Expense->CategoryName }}</td>
                                             <td>{{ $Expense->BankName }}</td>
                                             <td>{{ $Expense->Date }}</td>
@@ -60,6 +61,10 @@
                                                 <span>
                                                     <a href="{{ route('EditManageExpense', $Expense->UniqueCode) }}" class="mr-2" data-toggle="tooltip" data-placement="top" title="Edit">
                                                         <i class="fa fa-pencil color-muted"></i> 
+                                                    </a>
+
+                                                    <a href="{{ route('PrintLiabilityExpenseInvoice', $Expense->UniqueCode) }}" class="mr-2" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                        <i class="fa fa-print color-danger"></i>
                                                     </a>
 
                                                     @if(Session::has('AccountType') != 'Accountant')

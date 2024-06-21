@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 09, 2024 at 01:59 AM
+-- Generation Time: Jun 22, 2024 at 01:45 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -144,9 +144,10 @@ CREATE TABLE `bank_accounts` (
 --
 
 INSERT INTO `bank_accounts` (`id`, `BankName`, `Title`, `BranchCode`, `AccountNumber`, `IBANNumber`, `AccountType`, `Balance`, `Description`, `Date`, `AdminStatus`, `AcademyCode`, `UniqueCode`, `created_at`, `updated_at`) VALUES
-(1, 'Meezan Bank', 'Abdullah khan', '0100', '051245154545484', '0', 'Capital', '15000', 'best', '2024-05-23', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'AeuQIXj2LwTrnaaFq9ZuhyXXX12lBtcaysiR3SpUWYaVvjjjdJ', '2024-05-23 05:29:05', '2024-06-06 19:00:16'),
+(1, 'Meezan Bank', 'Abdullah khan', '0100', '051245154545484', '0', 'Capital', '100000', 'best', '2024-05-23', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'AeuQIXj2LwTrnaaFq9ZuhyXXX12lBtcaysiR3SpUWYaVvjjjdJ', '2024-05-23 05:29:05', '2024-06-20 18:17:25'),
 (2, 'Allied Bank', 'Abdullah khan', '1065', '4540046454', '0541684181405164', 'FixedAssets', '100000', 'Expense Account', '2024-05-28', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', '6cjGfXmDlvFQXpw1FwCsrDJtq9t3v0LRxRhIy32TqoZZs0SCYJ', '2024-05-28 17:26:50', '2024-06-06 19:00:32'),
-(3, 'Easy Paisa', 'Ferzan Ahmed', '0100', '03356555356', 'PK90052414124NCKJN6', 'CurrentAccount', '16000', 'K', '2024-06-07', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'fqOFhy2gHNTYY266MPgSBO0JmEnyqljCaqslRWk3HG7yrCm85A', '2024-06-07 12:58:15', '2024-06-07 12:58:15');
+(3, 'Easy Paisa', 'Ferzan Ahmed', '0100', '03356555356', 'PK90052414124NCKJN6', 'CurrentAccount', '16000', 'K', '2024-06-07', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'fqOFhy2gHNTYY266MPgSBO0JmEnyqljCaqslRWk3HG7yrCm85A', '2024-06-07 12:58:15', '2024-06-07 12:58:15'),
+(4, 'Metro Bank', 'Ali khan', '054121', '201540117541', 'cs1w5d8wx74w6cf51401', 'SavingAccount', '6000', '.', '2024-06-12', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'Si5kjR1YnNPtv5CaaaagoylKWSbLMnbq6VlqQIBYe0jUnbAytZ', '2024-06-12 17:43:04', '2024-06-12 17:43:31');
 
 -- --------------------------------------------------------
 
@@ -364,7 +365,7 @@ CREATE TABLE `manage_salaries` (
 --
 
 INSERT INTO `manage_salaries` (`id`, `Date`, `EmployeeID`, `ExpenseID`, `BankID`, `Salary`, `Allowances`, `NetSalary`, `Deductions`, `TotalSalary`, `Description`, `AdminStatus`, `AcademyCode`, `UniqueCode`, `created_at`, `updated_at`) VALUES
-(1, '2024-06-04', 1, 1, 1, '15000', '1501', '16501', '0', '16501', 'best employee', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'oCsGjOl5Xclbba7IGELuVpUEDTDWXqnkjKD3jYdEB9lODQdIsa', '2024-06-06 18:43:07', '2024-06-06 18:43:07');
+(2, '2024-06-22', 1, 1, 1, '15000', '1501', '16501', '0', '16501', 'Net Describe', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'CDCnWepgXFE3HNVDcznvFDHjOLqkjuBimiRE52FrmuBri1C7V5', '2024-06-21 18:26:37', '2024-06-21 18:26:37');
 
 -- --------------------------------------------------------
 
@@ -392,7 +393,9 @@ CREATE TABLE `manage_utlity_expenses` (
 
 INSERT INTO `manage_utlity_expenses` (`id`, `Date`, `Amount`, `Description`, `ExpenseID`, `BankID`, `AdminStatus`, `AcademyCode`, `UniqueCode`, `created_at`, `updated_at`) VALUES
 (1, '2024-06-06', '1500', 'testing', 4, 2, '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'tL6rCikqNzC9pab9PROgPMyXoTibxaOnq1wEUBTkzxZZQa459D', '2024-06-06 17:29:06', '2024-06-07 16:23:14'),
-(4, '2024-05-27', '2000', 'jerkjrjroei', 4, 3, '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'Tap1YCeH13jmPXtW6o6MTz3RNGzRNBIibPPHwb4kHlIsl6Vbij', '2024-06-07 13:00:33', '2024-06-07 13:00:33');
+(4, '2024-05-27', '2000', 'jerkjrjroei', 4, 3, '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'Tap1YCeH13jmPXtW6o6MTz3RNGzRNBIibPPHwb4kHlIsl6Vbij', '2024-06-07 13:00:33', '2024-06-07 13:00:33'),
+(5, '2024-06-09', '15000', 'elecricty bill', 3, 1, '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'DMOHarky6uJqL3VHjDX4DVYZGqa3CDy6C9ERGRVKu4yUiUgvsK', '2024-06-09 09:28:49', '2024-06-21 16:40:24'),
+(6, '2024-06-09', '2500', '.', 5, 2, '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', '19wUa2E4oJ4i9ubonN65uQ6idljsbecpYJLMFiSDX3rgLwiauc', '2024-06-09 10:17:14', '2024-06-09 10:17:14');
 
 -- --------------------------------------------------------
 
@@ -515,8 +518,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('25bcQtfecwzG9rCSjkZqshXLmO9mzZYkbZeaf6nF', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiU3o2aVI3Z0NNTXp3M0xkVE5KdW1XZFNzMXQ2TWlSMnF0dE1qUkRzSCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxMToiQWNhZGVteUNvZGUiO3M6NTA6IjdxdDBSNm00TXhhRjZ0ZEpYSXZiNnB5dlhoSzd6TG1wRnJwNUZOODZzZm4xcXNJejFYIjtzOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo0MzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL01ha2VfU3R1ZGVudHNfUGF5bWVudCI7fX0=', 1717881554),
-('cXHJdSxEuMoQio426bPRSsBPYh6I7I6SJRB52CEc', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiOVBra0ppVldTN0VnSklrNTJveDJ6Y0FCSVVkUkI5N215cm1ZMHE0UyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxMToiQWNhZGVteUNvZGUiO3M6NTA6IjdxdDBSNm00TXhhRjZ0ZEpYSXZiNnB5dlhoSzd6TG1wRnJwNUZOODZzZm4xcXNJejFYIjtzOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozMzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL01hbmFnZS1GZWVzIjt9fQ==', 1717850139);
+('Qc6TnUkERr4oLVPczbOVSMUJVWZ9Y3AD7LbFutcm', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSWQ2Tm9nSGVsSDFjcUF3T2NjaFhvQlFVMW81MDc0cW5XTmttU21RNSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxMToiQWNhZGVteUNvZGUiO3M6NTA6IjdxdDBSNm00TXhhRjZ0ZEpYSXZiNnB5dlhoSzd6TG1wRnJwNUZOODZzZm4xcXNJejFYIjtzOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo0NDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL0luY29tZV9Mb3NzX1N0YXRlbWVudHMiO319', 1719013097);
 
 -- --------------------------------------------------------
 
@@ -644,7 +646,8 @@ CREATE TABLE `utlity_expense_categories` (
 INSERT INTO `utlity_expense_categories` (`id`, `CategoryName`, `CreateDate`, `AdminStatus`, `AcademyCode`, `UniqueCode`, `created_at`, `updated_at`) VALUES
 (1, 'Salary', '2024-06-06', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'g3fxnarPTZvE1o1jqKeR10BVASRKAyXdZEIQqMQBjs1SfqSma9', NULL, '2024-06-06 17:14:49'),
 (3, 'Electricity Bill', '2024-06-06', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'BczkAIPSIu8kzA3RTVPDNBPw9IrZak669TyDewSiai2MnFhW1r', NULL, NULL),
-(4, 'Supplies Expense', '2024-06-07', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'fTjRqrxNzxASHjVF8xzCAGqP6iW7vXZeUdXlBih5LcZvMbNjbc', NULL, NULL);
+(4, 'Supplies Expense', '2024-06-07', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'fTjRqrxNzxASHjVF8xzCAGqP6iW7vXZeUdXlBih5LcZvMbNjbc', NULL, NULL),
+(5, 'Rent Expense', '2024-06-09', '0', '7qt0R6m4MxaF6tdJXIvb6pyvXhK7zLmpFrp5FN86sfn1qsIz1X', 'HodA7K5dYWszHEuGf7m9ZWYj2M2GqIYqek2vYv5Yo49Mm1gwmC', NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -839,7 +842,7 @@ ALTER TABLE `assets_categories`
 -- AUTO_INCREMENT for table `bank_accounts`
 --
 ALTER TABLE `bank_accounts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `expence_categories`
@@ -881,13 +884,13 @@ ALTER TABLE `manage_expenses`
 -- AUTO_INCREMENT for table `manage_salaries`
 --
 ALTER TABLE `manage_salaries`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `manage_utlity_expenses`
 --
 ALTER TABLE `manage_utlity_expenses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -929,7 +932,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `utlity_expense_categories`
 --
 ALTER TABLE `utlity_expense_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

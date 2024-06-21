@@ -250,10 +250,10 @@
 
                                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                                             class="icon icon-single-04"></i><span class="nav-text">Student Manage</span></a>
-                                    <ul aria-expanded="false">
-                                        <li><a href="{{ route('AllFeesCategory') }}">Fees Manage</a></li>                                        
-                                        <li><a href="{{ route('StudentFees') }}">Student Fees</a></li>
+                                    <ul aria-expanded="false">                                        
+                                        <li><a href="{{ route('AllFeesCategory') }}">Fees Manage</a></li>
                                         <li><a href="{{ route('MakeStudentsPayment') }}">Generate Fees</a></li>
+                                        <li><a href="{{ route('StudentFees') }}">Student Fees</a></li>
                                     </ul>
                                 </li>
 
@@ -261,16 +261,10 @@
                                             class="icon icon-single-04"></i><span class="nav-text"> Reports</span></a>
                                     <ul aria-expanded="false">
 
-                                        <li><a href="{{ route('ProfitLossStatements') }}">Profit and Loss Statements</a></li>
-                                        
-                                        <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                                class="icon icon-single-04"></i><span class="nav-text">SOFP</span></a>
-                                            <ul aria-expanded="false">
-                                                <li><a href="{{ route('BalanceSheet') }}">Balance Sheet</a></li>
-                                            </ul>
-                                        </li>
-                                        
+                                        <li><a href="{{ route('ProfitLossStatements') }}">Income and Loss Statements</a></li>
+                                        <li><a href="{{ route('BalanceSheet') }}">Balance Sheet</a></li>                                    
                                         <li><a href="{{ route('CashFlowStatement') }}">CashFlow Statement</a></li>
+                                        <li><a href="{{ route('GeneralJournal') }}">General Journal</a></li>
                                     </ul>
                                 </li>
 

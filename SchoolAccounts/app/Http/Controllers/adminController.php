@@ -683,6 +683,75 @@ class adminController extends Controller
         }
     
     }
+
+    public function PrintAllLiabilityManageExpense(){
+        $admin = session()->get('AcademyCode', '');    
+
+        $ManageExpense = ManageExpense::where('manage_expenses.AcademyCode', $admin)
+            ->select('manage_expenses.*', 
+                'expence_categories.CategoryName as CategoryName',
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType'
+            )
+            ->join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+            ->join('bank_accounts', 'manage_expenses.BankID', '=', 'bank_accounts.id')
+            ->orderBy('manage_expenses.id', 'desc')
+            ->get();
+
+        return view('ExpenseManage.PrintFiles.Print_All_Liability_Expense', ['ManageExpense' => $ManageExpense]);
+    }
+
+    public function PrintLiabilityExpenseReport(Request $request){
+        $admin = session()->get('AcademyCode', []);
+        $DateRange = $request->input('datefilter');
+
+        // Check if date range is not provided
+        if (!$DateRange) {
+            // Flash session message for user
+            $request->session()->flash('status', 'Please first select a date range and then fetch data.');
+            return redirect()->back(); // Redirect back to the previous page
+        }
+
+        // DateRange ko split karo start aur end dates mein
+        list($startDate, $endDate) = explode(' - ', $DateRange);
+        // DateTime object mein convert karo
+        $startDateTime = \DateTime::createFromFormat('m/d/Y', $startDate);
+        $endDateTime = \DateTime::createFromFormat('m/d/Y', $endDate);
+        // MySQL ke date format mein convert karo
+        $formattedStartDate = $startDateTime->format('Y-m-d');
+        $formattedEndDate = $endDateTime->format('Y-m-d');
+
+        try {
+            // Fetch data from the database using the provided parameters
+            $ExpenseReport = ManageExpense::join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+                ->select('manage_expenses.*', 'expence_categories.CategoryName as ExpenseName', 
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType',
+                )
+                ->join('bank_accounts', 'manage_expenses.BankID', '=', 'bank_accounts.id')
+                ->where('manage_expenses.AcademyCode', '=', $admin)
+                ->whereBetween('manage_expenses.Date', [$formattedStartDate, $formattedEndDate])
+                ->get();
+
+            $filterDate = [
+                $formattedStartDate,
+                $formattedEndDate
+            ];
+
+            return view('ExpenseManage.PrintFiles.Print_Liability_Report', [
+                'ExpenseReport' => $ExpenseReport, 
+                'filterDate' => $filterDate
+            ]);
+
+            // Data ko JSON format mein return karna
+            // return response()->json($ExpenseReport);
+        } catch (\Exception $e) {
+            \Log::error("Database query error: " . $e->getMessage());
+            return response()->json(['error' => 'Server error occurred.'], 500);
+        }
+    }
     // End Manage Expense Category
 
     // Start Assets Category
@@ -820,7 +889,7 @@ class adminController extends Controller
             ->join('assets_categories', 'manage_assets.AssetID', '=', 'assets_categories.id')
             ->join('bank_accounts', 'manage_assets.BankID', '=', 'bank_accounts.id')
             ->orderBy('manage_assets.id', 'desc')
-            ->get(); 
+            ->get();
 
         return view('ManageAssets.AllAssetsManage', ['ManageAssets' => $ManageAssets]);
     }
@@ -910,6 +979,75 @@ class adminController extends Controller
         }
     
     }
+
+    public function PrintAllAssetsManage(){
+        $admin = session()->get('AcademyCode', '');    
+
+        $ManageAssets = ManageAssets::where('manage_assets.AcademyCode', $admin)
+            ->select('manage_assets.*', 
+                'assets_categories.CategoryName as CategoryName',
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType'
+            )
+            ->join('assets_categories', 'manage_assets.AssetID', '=', 'assets_categories.id')
+            ->join('bank_accounts', 'manage_assets.BankID', '=', 'bank_accounts.id')
+            ->orderBy('manage_assets.id', 'desc')
+            ->get();
+
+        return view('ManageAssets.PrintFiles.Print_All_Assets_Manage', ['ManageAssets' => $ManageAssets]);
+    }
+
+    public function PrintAssetsReport(Request $request){
+        $admin = session()->get('AcademyCode', []);
+        $DateRange = $request->input('datefilter');
+
+        // Check if date range is not provided
+        if (!$DateRange) {
+            // Flash session message for user
+            $request->session()->flash('status', 'Please first select a date range and then fetch data.');
+            return redirect()->back(); // Redirect back to the previous page
+        }
+
+        // DateRange ko split karo start aur end dates mein
+        list($startDate, $endDate) = explode(' - ', $DateRange);
+        // DateTime object mein convert karo
+        $startDateTime = \DateTime::createFromFormat('m/d/Y', $startDate);
+        $endDateTime = \DateTime::createFromFormat('m/d/Y', $endDate);
+        // MySQL ke date format mein convert karo
+        $formattedStartDate = $startDateTime->format('Y-m-d');
+        $formattedEndDate = $endDateTime->format('Y-m-d');
+
+        try {
+            // Fetch data from the database using the provided parameters            
+            $ManageAssets = ManageAssets::join('assets_categories', 'manage_assets.AssetID', '=', 'assets_categories.id')
+                ->select('manage_assets.*', 'assets_categories.CategoryName as ExpenseName', 
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType',
+                )
+                ->join('bank_accounts', 'manage_assets.BankID', '=', 'bank_accounts.id')
+                ->where('manage_assets.AcademyCode', '=', $admin)
+                ->whereBetween('manage_assets.Date', [$formattedStartDate, $formattedEndDate])
+                ->get();
+
+            $filterDate = [
+                $formattedStartDate,
+                $formattedEndDate
+            ];
+
+            return view('ManageAssets.PrintFiles.Print_Assets_Report', [
+                'ManageAssets' => $ManageAssets, 
+                'filterDate' => $filterDate
+            ]);
+
+            // Data ko JSON format mein return karna
+            // return response()->json($ExpenseReport);
+        } catch (\Exception $e) {
+            \Log::error("Database query error: " . $e->getMessage());
+            return response()->json(['error' => 'Server error occurred.'], 500);
+        }
+    }
     // End Assets Manage Category
 
     // Start Bank Account
@@ -937,7 +1075,7 @@ class adminController extends Controller
         }
         $BankAccount->AccountType = $req->AccountType;
         $BankAccount->Balance = $req->Balance;
-        $BankAccount->Description = $req->Description;
+        $BankAccount->Description = '.';
         $BankAccount->Date = $currentTime;
         $BankAccount->AcademyCode = $admin;
         $BankAccount->UniqueCode = $uniqueID;
@@ -991,7 +1129,6 @@ class adminController extends Controller
 
         $BankAccount->AccountType = $req->AccountType;
         $BankAccount->Balance = $req->Balance;
-        $BankAccount->Description = $req->Description;
         $BankAccount->save();
 
         $req->session()->flash('Success_status', 'Bank account added Successfully!');
@@ -1278,7 +1415,7 @@ class adminController extends Controller
         $EmployeeID = $StaffData->id;
 
         $ManageSalary = ManageSalary::where('manage_salaries.AcademyCode', '=', $admin)
-            ->select('manage_salaries.*', 'expence_categories.CategoryName as ExpenseName',
+            ->select('manage_salaries.*', 'utlity_expense_categories.CategoryName as ExpenseName',
                     'bank_accounts.BankName as BankName',
                     'bank_accounts.Title as BankTitle',
                     'bank_accounts.AccountType as BankAccountType',
@@ -1286,7 +1423,7 @@ class adminController extends Controller
                     'staff_accounts.AccountType as EmployeeType',
                     'staff_accounts.UniqueCode as EmployeeUniqueCode',
             )
-            ->join('expence_categories', 'manage_salaries.ExpenseID', '=', 'expence_categories.id')
+            ->join('utlity_expense_categories', 'manage_salaries.ExpenseID', '=', 'utlity_expense_categories.id')
             ->join('bank_accounts', 'manage_salaries.BankID', '=', 'bank_accounts.id')
             ->join('staff_accounts', 'manage_salaries.EmployeeID', '=', 'staff_accounts.id')
             ->where('manage_salaries.EmployeeID', '=', $EmployeeID)        
@@ -1717,7 +1854,7 @@ class adminController extends Controller
         
         return view('Manage_Income_Expense_Reports.Income_Expense_Reports', ['ExpenceCategory' => $UtlityExpenseCategory]);
     }
-    
+
     public function SearchProfitLossStatements(Request $request) {
         $admin = session()->get('AcademyCode', []);
         $ExpenseCategory = $request->input('ExpenseCategory');
@@ -1813,6 +1950,101 @@ class adminController extends Controller
         }
     }
 
+    public function PrintIncomeLossStatements(Request $request) {
+
+        $admin = session()->get('AcademyCode', []);
+        $ExpenseCategory = $request->input('PrintExpensecategory');
+        $FilterData = $request->input('PrintFilterDate');
+        $currentTime = Carbon::now()->format('Y-m-d');
+
+        if (!$ExpenseCategory || !$FilterData) {
+            // Flash session message for user
+            $request->session()->flash('status', 'Please first select filter and then fetch data.');
+            return redirect()->back(); // Redirect back to the previous page
+        }
+            
+        switch ($FilterData) {
+            case 'Last1Year':
+                $startDate = Carbon::now()->subYear(1)->format('Y-m-d');
+                break;
+            case 'Last2Years':
+                $startDate = Carbon::now()->subYears(2)->format('Y-m-d');
+                break;
+            case 'Last4Years':
+                $startDate = Carbon::now()->subYears(4)->format('Y-m-d');
+                break;
+            case 'AllYears':
+            default:
+                $startDate = null;
+                break;
+        }
+    
+            $salaryQuery = ManageSalary::join('expence_categories', 'manage_salaries.ExpenseID', '=', 'expence_categories.id')
+                ->join('bank_accounts', 'manage_salaries.BankID', '=', 'bank_accounts.id')
+                ->join('staff_accounts', 'manage_salaries.EmployeeID', '=', 'staff_accounts.id')
+                ->select(
+                    'manage_salaries.*', 
+                    'expence_categories.CategoryName as ExpenseName',
+                    'bank_accounts.BankName as BankName',
+                    'bank_accounts.Title as BankTitle',
+                    'bank_accounts.AccountType as BankAccountType'
+                )
+                ->where('manage_salaries.AcademyCode', '=', $admin);
+    
+            if ($startDate) {
+                $salaryQuery->where('manage_salaries.Date', '>=', $startDate);
+            }
+    
+            if ($ExpenseCategory != 'AllCategories') {
+                $salaryQuery->where('manage_salaries.ExpenseID', '=', $ExpenseCategory);
+            }
+    
+            $fetch_salary = $salaryQuery->get();
+    
+            $expenseQuery = ManageUtlityExpense::join('utlity_expense_categories', 
+                    'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id'
+                )
+                ->join('bank_accounts', 'manage_utlity_expenses.BankID', '=', 'bank_accounts.id')
+                ->select(
+                    'manage_utlity_expenses.*',
+                    'manage_utlity_expenses.Amount as ExpenseAmount',
+                    'utlity_expense_categories.CategoryName as ExpenseName',
+                    'bank_accounts.BankName as BankName',
+                    'bank_accounts.Title as BankTitle',
+                    'bank_accounts.AccountType as BankAccountType'
+                )
+                ->where('manage_utlity_expenses.AcademyCode', '=', $admin);
+    
+            if ($startDate) {
+                $expenseQuery->where('manage_utlity_expenses.Date', '>=', $startDate);
+            }
+    
+            if ($ExpenseCategory != 'AllCategories') {
+                $expenseQuery->where('manage_utlity_expenses.ExpenseID', '=', $ExpenseCategory);
+            }
+    
+            $ExpenseData = $expenseQuery->get();
+    
+            $paymentQuery = PaymentRecords::where('AcademyCode', '=', $admin);
+            
+            if ($startDate) {
+                $paymentQuery->where('FeeExpDate', '>=', $startDate);
+            }
+    
+            $PaymentRecords = $paymentQuery->get();
+    
+            $combinedData = $fetch_salary->merge($ExpenseData);
+           
+            $response = [
+                'expenses' => $combinedData,
+                'payments' => $PaymentRecords
+            ];
+                
+            // \Log::error("Database query error: " . json_encode($response));
+    
+            return view('Manage_Income_Expense_Reports.PrintFiles.Print_Income_Expense_Statement', ['response' => $response]);
+    }
+
     public function BalanceSheet(){
         return view('Manage_Income_Expense_Reports.Balance_Sheet');
     }
@@ -1876,6 +2108,76 @@ class adminController extends Controller
             'Years' => $years,
         ]);
     }
+
+    public function PrintBalanceSheet(Request $request) {
+
+        $admin = session()->get('AcademyCode', []);
+        $FilterData = $request->input('PrintFilterDate');
+        $today = now();
+    
+        if (!$FilterData) {
+            // Flash session message for user
+            $request->session()->flash('status', 'Please first select filter and then fetch data.');
+            return redirect()->back(); // Redirect back to the previous page
+        }
+
+        if ($FilterData === 'Last1Year') {
+            $startDate = $today->copy()->subYear();
+        } elseif ($FilterData === 'Last3Years') {
+            $startDate = $today->copy()->subYears(3);
+        } elseif ($FilterData === 'Last5Years') {
+            $startDate = $today->copy()->subYears(5);
+        } else {
+            return response()->json(['error' => 'Invalid filter selected'], 400);
+        }
+    
+        $formattedStartDate = $startDate->format('Y-m-d');
+        $formattedEndDate = $today->format('Y-m-d');
+    
+        // Fetch and group ManageAssets data by category
+        $ManageAssets = ManageAssets::join('assets_categories', 'manage_assets.AssetID', '=', 'assets_categories.id')
+            ->select('assets_categories.CategoryName as Category', DB::raw('SUM(manage_assets.Amount) as TotalAmount'))
+            ->where('manage_assets.AcademyCode', '=', $admin)
+            ->whereBetween('manage_assets.Date', [$formattedStartDate, $formattedEndDate])
+            ->groupBy('assets_categories.CategoryName')
+            ->get();
+    
+        // Fetch and group ExpenseReport data by category
+        $ExpenseReport = ManageExpense::join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+            ->select('expence_categories.CategoryName as Category', DB::raw('SUM(manage_expenses.Amount) as TotalAmount'))
+            ->where('manage_expenses.AcademyCode', '=', $admin)
+            ->whereBetween('manage_expenses.Date', [$formattedStartDate, $formattedEndDate])
+            ->groupBy('expence_categories.CategoryName')
+            ->get();
+    
+        // Get distinct years from ManageAssets and ManageExpense within the date range
+        $years = ManageAssets::select(DB::raw('YEAR(Date) as Year'))
+            ->where('AcademyCode', '=', $admin)
+            ->whereBetween('Date', [$formattedStartDate, $formattedEndDate])
+            ->distinct()
+            ->pluck('Year');
+    
+        // If no years found in ManageAssets, check ManageExpense
+        if ($years->isEmpty()) {
+            $years = ManageExpense::select(DB::raw('YEAR(Date) as Year'))
+                ->where('AcademyCode', '=', $admin)
+                ->whereBetween('Date', [$formattedStartDate, $formattedEndDate])
+                ->distinct()
+                ->pluck('Year');
+        }
+    
+        // Sort years in ascending order
+        $years = $years->sort()->values();
+    
+        $response = [
+            'ManageAssets' => $ManageAssets,
+            'ExpenseReport' => $ExpenseReport,
+            'Years' => $years,
+        ];
+
+        return view('Manage_Income_Expense_Reports.PrintFiles.Print_Balance_Sheet', ['response' => $response]);
+    }
+
     
     public function SearchCashFlowStatement(Request $request) {
         $admin = session()->get('AcademyCode', []);
@@ -1943,6 +2245,286 @@ class adminController extends Controller
         ]);
     }
     
+    public function PrintCashFlowStatement(Request $request){
+
+        $admin = session()->get('AcademyCode', []);
+        $FilterData = $request->input('PrintFilterDate');
+        $today = now();
+
+        if (!$FilterData) {
+            // Flash session message for user
+            $request->session()->flash('status', 'Please first select filter and then fetch data.');
+            return redirect()->back(); // Redirect back to the previous page
+        }
+
+        if ($FilterData === 'Last1Year') {
+            $startDate = $today->copy()->subYear();
+        } elseif ($FilterData === 'Last3Years') {
+            $startDate = $today->copy()->subYears(3);
+        } elseif ($FilterData === 'Last5Years') {
+            $startDate = $today->copy()->subYears(5);
+        } else {
+            return response()->json(['error' => 'Invalid filter selected'], 400);
+        }
+
+        $formattedStartDate = $startDate->format('Y-m-d');
+        $formattedEndDate = $today->format('Y-m-d');
+
+        $ManageCashInflows = PaymentRecords::join('fees_categories', 'payment_records.PaymentID', '=', 'fees_categories.id')
+            ->select('payment_records.PaymentID', 'fees_categories.Title as FeesTitle', DB::raw('SUM(payment_records.Paid) as TotalAmount'))
+            ->where('payment_records.AcademyCode', '=', $admin)
+            ->whereBetween('payment_records.FeeExpDate', [$formattedStartDate, $formattedEndDate])
+            ->groupBy('payment_records.PaymentID', 'fees_categories.Title')
+            ->get();
+
+        $ManageSalaries = ManageSalary::select(
+            'utlity_expense_categories.CategoryName as Category',
+            DB::raw('SUM(manage_salaries.TotalSalary) as TotalAmount')
+        )
+            ->join('utlity_expense_categories', 'manage_salaries.ExpenseID', '=', 'utlity_expense_categories.id')
+            ->where('manage_salaries.AcademyCode', '=', $admin)
+            ->whereBetween('manage_salaries.Date', [$formattedStartDate, $formattedEndDate])
+            ->groupBy('utlity_expense_categories.CategoryName')
+            ->get();
+
+        $ManageCashOutflows = ManageExpense::join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+            ->select('expence_categories.CategoryName as Category', DB::raw('SUM(manage_expenses.Amount) as TotalAmount'))
+            ->where('manage_expenses.AcademyCode', '=', $admin)
+            ->whereBetween('manage_expenses.Date', [$formattedStartDate, $formattedEndDate])
+            ->groupBy('expence_categories.CategoryName')
+            ->get();
+
+        $expenseQuery = ManageUtlityExpense::join('utlity_expense_categories', 'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id')
+            ->select('utlity_expense_categories.CategoryName as Category', DB::raw('SUM(manage_utlity_expenses.Amount) as TotalAmount'))
+            ->where('manage_utlity_expenses.AcademyCode', '=', $admin)
+            ->whereBetween('manage_utlity_expenses.Date', [$formattedStartDate, $formattedEndDate])
+            ->groupBy('utlity_expense_categories.CategoryName')
+            ->get();
+
+        // Calculate totals
+        $totalCashInflows = $ManageCashInflows->sum('TotalAmount');
+        $totalSalaries = $ManageSalaries->sum('TotalAmount');
+        $totalExpenses = $ManageCashOutflows->sum('TotalAmount') + $expenseQuery->sum('TotalAmount');
+        $totalCashOutflows = $totalSalaries + $totalExpenses;
+        $netCashFlow = $totalCashInflows - $totalCashOutflows;
+
+        // Pass data to view
+        $data = [
+            'ManageCashInflows' => $ManageCashInflows,
+            'ManageCashOutflows' => $ManageCashOutflows,
+            'ManageSalaries' => $ManageSalaries,
+            'expenseQuery' => $expenseQuery,
+            'totalCashInflows' => $totalCashInflows,
+            'totalCashOutflows' => $totalCashOutflows,
+            'netCashFlow' => $netCashFlow,
+        ];
+
+        return view('Manage_Income_Expense_Reports.PrintFiles.Print_Cash_Flow_Statement', compact('data'));
+    }
+
+    public function GeneralJournal(){
+        $admin = session()->get('AcademyCode', []);
+        $BankAccount = BankAccount::where('AcademyCode', '=', $admin)->get();
+        return view('Manage_Income_Expense_Reports.Manage_General_Journal', ['BankAccount' => $BankAccount]);
+    }
+
+    public function SearchGeneralJournal(Request $request){
+        $admin = session()->get('AcademyCode', []);
+        $BankAccount = $request->input('BankAccount');
+        $FilterData = $request->input('FilterDate');
+
+        $today = now();
+    
+        if ($FilterData === 'Last1Year') {
+            $startDate = $today->copy()->subYear();
+        } elseif ($FilterData === 'Last3Years') {
+            $startDate = $today->copy()->subYears(3);
+        } elseif ($FilterData === 'Last5Years') {
+            $startDate = $today->copy()->subYears(5);
+        } else {
+            return response()->json(['error' => 'Invalid filter selected'], 400);
+        }
+    
+        $formattedStartDate = $startDate->format('Y-m-d');
+        $formattedEndDate = $today->format('Y-m-d');
+
+        $BankAccountData = BankAccount::where('AcademyCode', '=', $admin)
+            ->where('id', '=', $BankAccount)
+            ->first();
+
+        $ManageUtlityExpense = ManageUtlityExpense::join('utlity_expense_categories', 'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id')
+            ->select('manage_utlity_expenses.*', 'utlity_expense_categories.CategoryName as ExpenseName')
+            ->where('manage_utlity_expenses.AcademyCode', '=', $admin)
+            ->where('manage_utlity_expenses.BankID', '=', $BankAccount)
+            ->whereBetween('manage_utlity_expenses.Date', [$formattedStartDate, $formattedEndDate])            
+            ->get();
+
+        $ManageExpense = ManageExpense::join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+            ->select('manage_expenses.*', 'expence_categories.CategoryName as ExpenseName',
+                'manage_expenses.Amount as '
+            )
+            ->where('manage_expenses.AcademyCode', '=', $admin)
+            ->where('manage_expenses.BankID', '=', $BankAccount)
+            ->whereBetween('manage_expenses.Date', [$formattedStartDate, $formattedEndDate])            
+            ->get();
+        
+        $ManageAssets = ManageAssets::join('assets_categories', 'manage_assets.AssetID', '=', 'assets_categories.id')
+            ->select('manage_assets.*', 'assets_categories.CategoryName as ExpenseName',
+                'manage_assets.Amount as Paid'
+            )
+            ->where('manage_assets.AcademyCode', '=', $admin)
+            ->where('manage_assets.BankID', '=', $BankAccount)
+            ->whereBetween('manage_assets.Date', [$formattedStartDate, $formattedEndDate])            
+            ->get();
+            
+        $PaymentRecords = PaymentRecords::join('fees_categories', 'payment_records.PaymentID', '=', 'fees_categories.id')
+            ->select('payment_records.*', 'fees_categories.Title as FeesName')
+            ->where('payment_records.AcademyCode', '=', $admin)
+            ->where('payment_records.BankID', '=', $BankAccount)
+            ->whereBetween('payment_records.FeeExpDate', [$formattedStartDate, $formattedEndDate])            
+            ->get();
+
+        return response()->json([
+            'BankAccountData' => $BankAccountData,
+            'ManageUtlityExpense' => $ManageUtlityExpense,
+            'ManageExpense' => $ManageExpense,
+            'ManageAssets' => $ManageAssets,
+            'PaymentRecords' => $PaymentRecords,
+        ]);
+        
+        // \Log::error("BankAccount: " . $PaymentRecords);
+        // \Log::error("FilterData: " . $FilterData);
+    }
+
+    public function PrintGeneralJournal(Request $request){
+
+        $admin = session()->get('AcademyCode', []);
+        $BankAccount = $request->input('PrintBankAccount');
+        $FilterData = $request->input('PrintFilterDate');
+
+        $today = now();
+    
+        if ($FilterData === 'Last1Year') {
+            $startDate = $today->copy()->subYear();
+        } elseif ($FilterData === 'Last3Years') {
+            $startDate = $today->copy()->subYears(3);
+        } elseif ($FilterData === 'Last5Years') {
+            $startDate = $today->copy()->subYears(5);
+        } else {
+            return response()->json(['error' => 'Invalid filter selected'], 400);
+        }
+    
+        $formattedStartDate = $startDate->format('Y-m-d');
+        $formattedEndDate = $today->format('Y-m-d');
+
+        $BankAccountData = BankAccount::where('AcademyCode', '=', $admin)
+            ->where('id', '=', $BankAccount)
+            ->first();
+
+        $ManageUtlityExpense = ManageUtlityExpense::join('utlity_expense_categories', 'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id')
+            ->select('manage_utlity_expenses.*', 'utlity_expense_categories.CategoryName as ExpenseName')
+            ->where('manage_utlity_expenses.AcademyCode', '=', $admin)
+            ->where('manage_utlity_expenses.BankID', '=', $BankAccount)
+            ->whereBetween('manage_utlity_expenses.Date', [$formattedStartDate, $formattedEndDate])            
+            ->get();
+
+        $ManageExpense = ManageExpense::join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+            ->select('manage_expenses.*', 'expence_categories.CategoryName as ExpenseName',
+                'manage_expenses.Amount as '
+            )
+            ->where('manage_expenses.AcademyCode', '=', $admin)
+            ->where('manage_expenses.BankID', '=', $BankAccount)
+            ->whereBetween('manage_expenses.Date', [$formattedStartDate, $formattedEndDate])            
+            ->get();
+        
+        $ManageAssets = ManageAssets::join('assets_categories', 'manage_assets.AssetID', '=', 'assets_categories.id')
+            ->select('manage_assets.*', 'assets_categories.CategoryName as ExpenseName',
+                'manage_assets.Amount as Paid'
+            )
+            ->where('manage_assets.AcademyCode', '=', $admin)
+            ->where('manage_assets.BankID', '=', $BankAccount)
+            ->whereBetween('manage_assets.Date', [$formattedStartDate, $formattedEndDate])            
+            ->get();
+            
+        $PaymentRecords = PaymentRecords::join('fees_categories', 'payment_records.PaymentID', '=', 'fees_categories.id')
+            ->select('payment_records.*', 'fees_categories.Title as FeesName')
+            ->where('payment_records.AcademyCode', '=', $admin)
+            ->where('payment_records.BankID', '=', $BankAccount)
+            ->whereBetween('payment_records.FeeExpDate', [$formattedStartDate, $formattedEndDate])            
+            ->get();
+
+           
+            $response = [
+                'BankAccountData' => $BankAccountData,
+                'ManageUtlityExpense' => $ManageUtlityExpense,
+                'ManageExpense' => $ManageExpense,
+                'ManageAssets' => $ManageAssets,
+                'PaymentRecords' => $PaymentRecords,                
+            ];
+    
+            return view('Manage_Income_Expense_Reports.PrintFiles.Print_General_Journal', ['response' => $response]);
+    }
+
+    // public function SearchGeneralJournal(Request $request){
+    //     $admin = session()->get('AcademyCode', []);
+    //     $BankAccount = $request->input('BankAccount');
+    //     $FilterData = $request->input('FilterDate');
+
+    //     $today = Carbon::now();
+    
+    //     if ($FilterData === 'Last1Year') {
+    //         $startDate = $today->copy()->subYear();
+    //     } elseif ($FilterData === 'Last3Years') {
+    //         $startDate = $today->copy()->subYears(3);
+    //     } elseif ($FilterData === 'Last5Years') {
+    //         $startDate = $today->copy()->subYears(5);
+    //     } else {
+    //         return response()->json(['error' => 'Invalid filter selected'], 400);
+    //     }
+    
+    //     $formattedStartDate = $startDate->format('Y-m-d');
+    //     $formattedEndDate = $today->format('Y-m-d');
+
+    //     $BankAccountData = BankAccount::where('AcademyCode', '=', $admin)
+    //         ->where('id', '=', $BankAccount)
+    //         ->first();
+
+    //     $ManageUtlityExpense = ManageUtlityExpense::join('utlity_expense_categories', 'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id')
+    //         ->select('manage_utlity_expenses.*', 'utlity_expense_categories.CategoryName as ExpenseName')
+    //         ->where('manage_utlity_expenses.AcademyCode', '=', $admin)
+    //         ->where('manage_utlity_expenses.BankID', '=', $BankAccount)
+    //         ->whereBetween('manage_utlity_expenses.Date', [$formattedStartDate, $formattedEndDate])            
+    //         ->get();
+
+    //     $ManageExpense = ManageExpense::join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+    //         ->select('manage_expenses.*', 'expence_categories.CategoryName as ExpenseName')
+    //         ->where('manage_expenses.AcademyCode', '=', $admin)
+    //         ->where('manage_expenses.BankID', '=', $BankAccount)
+    //         ->whereBetween('manage_expenses.Date', [$formattedStartDate, $formattedEndDate])            
+    //         ->get();
+        
+    //     $ManageAssets = ManageAssets::join('assets_categories', 'manage_assets.AssetID', '=', 'assets_categories.id')
+    //         ->select('manage_assets.*', 'assets_categories.CategoryName as AssetName')
+    //         ->where('manage_assets.AcademyCode', '=', $admin)
+    //         ->where('manage_assets.BankID', '=', $BankAccount)
+    //         ->whereBetween('manage_assets.Date', [$formattedStartDate, $formattedEndDate])            
+    //         ->get();
+            
+    //     $PaymentRecords = PaymentRecords::join('fees_categories', 'payment_records.PaymentID', '=', 'fees_categories.id')
+    //         ->select('payment_records.*', 'fees_categories.Title as FeesName')
+    //         ->where('payment_records.AcademyCode', '=', $admin)
+    //         ->where('payment_records.BankID', '=', $BankAccount)
+    //         ->whereBetween('payment_records.FeeExpDate', [$formattedStartDate, $formattedEndDate])            
+    //         ->get();
+
+    //     return response()->json([
+    //         'BankAccountData' => $BankAccountData,
+    //         'ManageUtlityExpense' => $ManageUtlityExpense,
+    //         'ManageExpense' => $ManageExpense,
+    //         'ManageAssets' => $ManageAssets,
+    //         'PaymentRecords' => $PaymentRecords,
+    //     ]);
+    // }
     // End Income & Expense Reports
 
     // Start Audit Trails
@@ -2138,6 +2720,123 @@ class adminController extends Controller
         // \Log::info("ManageCashOutflows query results: " . json_encode($result));
 
         return response()->json($result);
+    }
+
+    public function PrintTransactionLogs(Request $request){
+        // Retrieve admin session data
+        $admin = session()->get('AcademyCode', []);
+            
+        // Get filter data from request
+        $filterData = $request->input('datefilter');
+        $startDate = null;
+        
+        if (!$filterData) {
+            // Flash session message for user
+            $request->session()->flash('status', 'Please first select filter and then fetch data.');
+            return redirect()->back(); // Redirect back to the previous page
+        }
+
+        switch ($filterData) {
+            case 'Last1Year':
+                $startDate = now()->subYear()->format('Y-m-d');
+                break;
+            case 'Last3Years':
+                $startDate = now()->subYears(3)->format('Y-m-d');
+                break;
+            case 'Last5Years':
+                $startDate = now()->subYears(5)->format('Y-m-d');
+                break;
+            default:
+                return response()->json(['error' => 'Invalid filter selected'], 400);
+        }
+
+        // Fetch StaffAccounts records
+        $staffAccounts = StaffAccount::where('AcademyCode', $admin)->get();
+
+        // Fetch ManageSalary records
+        $manageSalaryRecords = ManageSalary::where('manage_salaries.AcademyCode', $admin)
+            ->select('manage_salaries.*',                     
+                    'bank_accounts.BankName as BankName',
+                    'bank_accounts.Title as BankTitle',
+                    'bank_accounts.AccountType as BankAccountType'
+                )
+            ->join('bank_accounts', 'manage_salaries.BankID', '=', 'bank_accounts.id')
+            ->whereBetween('manage_salaries.Date', [$startDate, now()->format('Y-m-d')])
+            ->get();
+
+        // Fetch ManageExpense records
+        $manageExpenseRecords = ManageExpense::where('manage_expenses.AcademyCode', $admin)
+            ->select('manage_expenses.*', 
+                'expence_categories.CategoryName as CategoryName',
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType'
+            )
+            ->join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+            ->join('bank_accounts', 'manage_expenses.BankID', '=', 'bank_accounts.id')
+            ->orderBy('manage_expenses.id', 'desc')
+            ->whereBetween('manage_expenses.Date', [$startDate, now()->format('Y-m-d')])
+            ->get();
+
+
+        $expenseQuery = ManageUtlityExpense::join('utlity_expense_categories', 
+                'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id'
+            )
+            ->join('bank_accounts', 'manage_utlity_expenses.BankID', '=', 'bank_accounts.id')
+            ->select(
+                'manage_utlity_expenses.*',
+                'manage_utlity_expenses.Amount as ExpenseAmount',
+                'utlity_expense_categories.CategoryName as ExpenseName',
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType'
+            )
+            ->where('manage_utlity_expenses.AcademyCode', '=', $admin)
+            ->orderBy('utlity_expense_categories.id', 'desc')
+            ->whereBetween('manage_utlity_expenses.Date', [$startDate, now()->format('Y-m-d')])
+            ->get();
+
+        // Combine and format the data
+        $result = [];
+
+        foreach ($expenseQuery as $record) {
+            $result[] = [
+                'employee_name' => $record->ExpenseName,
+                'AccountType' => 'Expense',
+                'month' => \Carbon\Carbon::parse($record->Date)->format('d-m-Y'),
+                'debit' => $record->Amount,
+                'credit' => $record->BankName . ' - ' . $record->BankTitle . ' - ' . $record->BankAccountType
+            ];
+        }
+
+        foreach ($manageSalaryRecords as $record) {
+            // Find corresponding staff account
+            $employee = $staffAccounts->where('employee_id', $record->employee_id)->first();
+
+            $result[] = [
+                'employee_name' => $employee->Name . ' - ' . $employee->AccountType,
+                'AccountType' => 'Salary',
+                'month' => \Carbon\Carbon::parse($record->Date)->format('d-m-Y'),
+                'debit' => $record->TotalSalary,
+                'credit' => $record->BankName . ' - ' . $record->BankTitle . ' - ' . $record->BankAccountType
+            ];
+        }
+
+        foreach ($manageExpenseRecords as $record) {
+            $result[] = [
+                'employee_name' => $record->CategoryName, // Assuming CategoryName contains the expense category
+                'AccountType' => 'Liability',
+                'month' => \Carbon\Carbon::parse($record->Date)->format('d-m-Y'),
+                'debit' => $record->Amount,
+                'credit' => $record->BankName . ' - ' . $record->BankTitle . ' - ' . $record->BankAccountType // Assuming BankName contains the bank name
+            ];
+        }
+
+        // \Log::info("ManageCashOutflows query results: " . json_encode($result));
+
+        // return response()->json($result);
+
+        return view('Audit_Trails.Print_Transction_logs', ['result' => $result]);
     }
     // End Audit Trails
 
@@ -2428,7 +3127,7 @@ class adminController extends Controller
                 ->get();
 
 
-            \Log::info("ManageCashOutflows query results: " . json_encode($ManageUtlityExpense));
+            // \Log::info("ManageCashOutflows query results: " . json_encode($ManageUtlityExpense));
 
             // Data ko JSON format mein return karna
             return response()->json($ManageUtlityExpense);
@@ -2438,6 +3137,162 @@ class adminController extends Controller
         }
     
     }
+
+    public function PrintAllManageExpense(){
+        $admin = session()->get('AcademyCode', '');    
+
+        $ManageUtlityExpense = ManageUtlityExpense::where('manage_utlity_expenses.AcademyCode', $admin)
+            ->select('manage_utlity_expenses.*', 
+                'utlity_expense_categories.CategoryName as CategoryName',
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType'
+            )
+            ->join('utlity_expense_categories', 'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id')
+            ->join('bank_accounts', 'manage_utlity_expenses.BankID', '=', 'bank_accounts.id')
+            ->orderBy('manage_utlity_expenses.id', 'desc')
+            ->get();
+
+        // return $ManageUtlityExpense;
+        return view('Manage_Utlity_Expense.Print_All_Manage_Utlity_Expense', ['ManageUtlityExpense' => $ManageUtlityExpense]);
+    }
+
+    public function PrintExpenseReport(Request $request) {
+        $admin = session()->get('AcademyCode', []);
+        $DateRange = $request->input('datefilter');
+        
+        // Check if date range is not provided
+        if (!$DateRange) {
+            // Flash session message for user
+            $request->session()->flash('status', 'Please first select a date range and then fetch data.');
+            return redirect()->back(); // Redirect back to the previous page
+        }
+
+        // DateRange ko split karo start aur end dates mein
+        list($startDate, $endDate) = explode(' - ', $DateRange);
+    
+        try {
+            // DateTime object mein convert karo
+            $startDateTime = \DateTime::createFromFormat('m/d/Y', $startDate);
+            $endDateTime = \DateTime::createFromFormat('m/d/Y', $endDate);
+            
+            if (!$startDateTime || !$endDateTime) {
+                throw new \Exception("Failed to create DateTime object for start date: $startDate or end date: $endDate");
+            }
+    
+            // MySQL ke date format mein convert karo
+            $formattedStartDate = $startDateTime->format('Y-m-d');
+            $formattedEndDate = $endDateTime->format('Y-m-d');
+    
+            // Fetch data from the database using the provided parameters
+            $ManageUtlityExpense = ManageUtlityExpense::join('utlity_expense_categories', 
+                    'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id')
+                ->select('manage_utlity_expenses.*', 'utlity_expense_categories.CategoryName as ExpenseName', 
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType',
+                )
+                ->join('bank_accounts', 'manage_utlity_expenses.BankID', '=', 'bank_accounts.id')
+                ->where('manage_utlity_expenses.AcademyCode', '=', $admin)
+                ->whereBetween('manage_utlity_expenses.Date', [$formattedStartDate, $formattedEndDate])
+                ->get();
+                
+                $filterDate = [
+                    $formattedStartDate,
+                    $formattedEndDate
+                ];
+
+                return view('Manage_Utlity_Expense.Print_Expense_Report', [
+                    'ManageUtlityExpense' => $ManageUtlityExpense,
+                    'filterDate' => $filterDate
+                ]);
+
+            // \Log::info("Received DateRange: " . json_encode($ManageUtlityExpense));
+                
+            // Further processing or returning the data as needed
+        } catch (\Exception $e) {
+            \Log::error("Error processing date range: " . $e->getMessage());
+            // Handle the error as appropriate, such as returning an error response
+            return response()->json(['error' => 'Failed to process date range.']);
+        }
+    }
     // End Manage Utlity Expense
+
+
+    // Print Invoices functions
+    public function PrintExpenseInvoice($id){
+        $admin = session()->get('AcademyCode', []);
+
+        $AcademyDetails = admins::where('AcademyCode', '=', $admin)->first();
+
+        $ManageUtlityExpense = ManageUtlityExpense::join('utlity_expense_categories', 
+            'manage_utlity_expenses.ExpenseID', '=', 'utlity_expense_categories.id')
+        ->select('manage_utlity_expenses.*', 'utlity_expense_categories.CategoryName as ExpenseName',
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType',
+        )
+        ->join('bank_accounts', 'manage_utlity_expenses.BankID', '=', 'bank_accounts.id')
+        ->where('manage_utlity_expenses.AcademyCode', '=', $admin)
+        ->where('manage_utlity_expenses.UniqueCode', '=', $id)        
+        ->first();
+        
+        return view('Manage_Utlity_Expense.Print_Utlity_Expense_Invoice', [
+            'ManageUtlityExpense' => $ManageUtlityExpense,
+            'AcademyDetails' => $AcademyDetails
+        ]);
+    }
+
+    public function PrintLiabilityExpenseInvoice($id){
+        // return $id;
+        $admin = session()->get('AcademyCode', []);
+        $AcademyDetails = admins::where('AcademyCode', '=', $admin)->first();
+
+        $ManageExpense = ManageExpense::where('manage_expenses.AcademyCode', $admin)
+            ->select('manage_expenses.*', 
+                'expence_categories.CategoryName as CategoryName',
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType',
+            )
+            ->join('expence_categories', 'manage_expenses.ExpenseID', '=', 'expence_categories.id')
+            ->join('bank_accounts', 'manage_expenses.BankID', '=', 'bank_accounts.id')
+            ->where('manage_expenses.AcademyCode', '=', $admin)        
+            ->where('manage_expenses.UniqueCode', '=', $id)        
+            ->first();
+
+            // return $ManageExpense;
+
+            return view('ExpenseManage.PrintFiles.Print_Liability_Expense_Invoice', [
+                'ManageExpense' => $ManageExpense,
+                'AcademyDetails' => $AcademyDetails
+            ]);
+    }
+
+    public function PrintAssetsInvoice($id){
+        // return $id;
+
+        $admin = session()->get('AcademyCode', []);
+        $AcademyDetails = admins::where('AcademyCode', '=', $admin)->first();
+
+        $ManageAssets = ManageAssets::where('manage_assets.AcademyCode', $admin)
+            ->select('manage_assets.*', 
+                'assets_categories.CategoryName as CategoryName',
+                'bank_accounts.BankName as BankName',
+                'bank_accounts.Title as BankTitle',
+                'bank_accounts.AccountType as BankAccountType',
+            )
+            ->join('assets_categories', 'manage_assets.AssetID', '=', 'assets_categories.id')
+            ->join('bank_accounts', 'manage_assets.BankID', '=', 'bank_accounts.id')
+            ->where('manage_assets.AcademyCode', '=', $admin)
+            ->where('manage_assets.UniqueCode', '=', $id)
+            ->first();
+
+        // return $ManageAssets;
+        return view('ManageAssets.PrintFiles.Print_Asstes_Invoice', [
+            'ManageAssets' => $ManageAssets,
+            'AcademyDetails' => $AcademyDetails
+        ]);
+    }
 
 }

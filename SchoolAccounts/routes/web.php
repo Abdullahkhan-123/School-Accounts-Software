@@ -85,6 +85,12 @@ Route::post('Update-Manage-Expense/{id}', [adminController::class, 'UpdateManage
 Route::view('Expense_Report', 'ManageExpenseReport.ExpenseReport')->name('Expense_Report');
 
 Route::get('Search_Expense_Report', [adminController::class, 'SearchExpenseReport'])->name('SearchExpenseReport');
+
+Route::get('Print_All_Liability_Manage_Expense', [adminController::class, 'PrintAllLiabilityManageExpense'])->name('PrintAllLiabilityManageExpense');
+
+Route::post('Print_Liability_Expense_Report', [adminController::class, 'PrintLiabilityExpenseReport'])->name('PrintLiabilityExpenseReport');
+
+Route::get('Print_Liability_Expense_Invoice/{id}', [adminController::class, 'PrintLiabilityExpenseInvoice'])->name('PrintLiabilityExpenseInvoice');
 // End Manage Expense Category
 
 // Start Assets Category
@@ -117,6 +123,12 @@ Route::post('Update-Assets-Manage/{id}', [adminController::class, 'UpdateAssetsM
 Route::view('Assets_Report', 'ManageAssets.AllAssetsReport')->name('AssetsReport');
 
 Route::get('Search_Asset_Report', [adminController::class, 'SearchAssetReport'])->name('SearchAssetReport');
+
+Route::get('Print_All_Assets_Manage', [adminController::class, 'PrintAllAssetsManage'])->name('PrintAllAssetsManage');
+
+Route::post('Print_Assets_Report', [adminController::class, 'PrintAssetsReport'])->name('PrintAssetsReport');
+
+Route::get('Print_Assets_Invoice/{id}', [adminController::class, 'PrintAssetsInvoice'])->name('PrintAssetsInvoice');
 // End Assets Manage
 
 
@@ -204,23 +216,37 @@ Route::get('Drop_Employee_Salaries/{id}', [adminController::class, 'DropEmployee
 // End Manage Salary 
 
 // Start Income & Expense Reports
-Route::get('Profit_Loss_Statements', [adminController::class, 'ProfitLossStatements'])->name('ProfitLossStatements');
+Route::get('Income_Loss_Statements', [adminController::class, 'ProfitLossStatements'])->name('ProfitLossStatements');
+
+Route::post('Print_Income_Loss_Statements', [adminController::class, 'PrintIncomeLossStatements'])->name('PrintIncomeLossStatements');
 
 Route::get('Search_Profit_Loss_Statements', [adminController::class, 'SearchProfitLossStatements'])->name('SearchProfitLossStatements');
 
 Route::get('Balance_Sheet', [adminController::class, 'BalanceSheet'])->name('BalanceSheet');
 
+Route::post('Print_Balance_Sheet', [adminController::class, 'PrintBalanceSheet'])->name('PrintBalanceSheet');
+
 Route::get('Search_Balance_Sheet', [adminController::class, 'SearchBalanceSheet'])->name('SearchBalanceSheet');
 
 Route::view('Cash_Flow_Statement',  'Manage_Income_Expense_Reports.Cash_Flow_Statement')->name('CashFlowStatement');
 
+Route::post('Print_Cash_Flow_Statement',  [adminController::class, 'PrintCashFlowStatement'])->name('PrintCashFlowStatement');
+
 Route::get('Search_Cash_Flow_Statement',  [adminController::class, 'SearchCashFlowStatement'])->name('SearchCashFlowStatement');
+
+Route::get('General_Journal', [adminController::class, 'GeneralJournal'])->name('GeneralJournal');
+
+Route::get('Search_General_Journal', [adminController::class, 'SearchGeneralJournal'])->name('SearchGeneralJournal');
+
+Route::post('Print_General_Journal', [adminController::class, 'PrintGeneralJournal'])->name('PrintGeneralJournal');
 // End Income & Expense Reports
 
 // Start Audit Trails
 Route::view('Transaction_Logs',  'Audit_Trails.Transaction_Logs')->name('TransactionLogs');
 
 Route::get('Search_Transaction_Logs', [adminController::class, 'SearchTransactionLogs'])->name('SearchTransactionLogs');
+
+Route::post('Print_Transaction_Logs', [adminController::class, 'PrintTransactionLogs'])->name('PrintTransactionLogs');
 // End Audit Trails
 
 // Start Reporting and Analytics
@@ -259,4 +285,9 @@ Route::view('Utlity_Expense_Report', 'Manage_Utlity_Expense.Utlity_Expense_Repor
 
 Route::get('Search_Utlity_Expense_Report', [adminController::class, 'SearchUtlityExpenseReport'])->name('SearchUtlityExpenseReport');
 
+Route::get('Print_All_Manage_Expense', [adminController::class, 'PrintAllManageExpense'])->name('PrintAllManageExpense');
+
+Route::post('Print_Expense_Report', [adminController::class, 'PrintExpenseReport'])->name('PrintExpenseReport');
+
+Route::get('Print_Expense_Invoice/{id}', [adminController::class, 'PrintExpenseInvoice'])->name('PrintExpenseInvoice');
 // End Manage Utlity Expense

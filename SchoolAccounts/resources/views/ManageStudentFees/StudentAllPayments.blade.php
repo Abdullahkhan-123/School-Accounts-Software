@@ -16,7 +16,9 @@
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item"><a href="#FeesManage" data-toggle="tab" class="nav-link active show">Fees Manage</a></li>
                                     <li class="nav-item"><a href="#FeesHistory" data-toggle="tab" class="nav-link">Fees History</a></li>
-                                </ul>
+                                </ul>                                    
+                            </div>
+
                                 <div class="tab-content">
                                     <div id="FeesManage" class="tab-pane fade active show">
                                         <div class="card-body">

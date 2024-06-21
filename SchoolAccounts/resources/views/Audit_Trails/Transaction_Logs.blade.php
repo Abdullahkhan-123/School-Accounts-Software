@@ -35,6 +35,13 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Audit Trails</h4>
+
+                        <!-- export as print -->
+                        <form method="post" action="{{ route('PrintTransactionLogs') }}">
+                            @csrf
+                            <input type="hidden" name="datefilter" id="datefilter">                                    
+                            <button class="btn btn-primary mb-2 mr-1" type="submit"> <i class="fa fa-print color-danger"></i> </button>
+                        </form>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -65,12 +72,18 @@
     $(document).ready(function() {
         $('#fetchData').click(function() {
             const FilterData = $('#FilterData').val();
+            const datefilter = $('#datefilter').val();
             
+            $('#datefilter').val(FilterData);
+
             // AJAX request
             $.ajax({
                 url: '/Search_Transaction_Logs',
                 method: 'GET',
-                data: { FilterData: FilterData },
+                data: { 
+                    FilterData: FilterData,
+                    datefilter: datefilter
+                },
                 success: function(data) {
                     // Clear the existing table body
                     $('#transactionLogs').empty();

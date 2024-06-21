@@ -24,7 +24,7 @@
                     @endif
 
                     <div class="card-header">
-                        <h4 class="card-title">Liability Manage Expense</h4>
+                        <h4 class="card-title">Edit Expense Manage</h4>
                     </div>
 
                     <div class="card-body">
@@ -41,7 +41,7 @@
 
                                 <div class="row"> 
                                     <div class="col">
-                                        <label>Expense Category:</label>
+                                        <label>Head Of Expense:</label>
                                         <select class="form-control" name="ExpenseCategory" id="sel1" required>
                                             <option value="{{ $ManageUtlityExpense->ExpenseID}}" selected>{{ $ManageUtlityExpense->CategoryName}}</option>
 

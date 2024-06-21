@@ -32,7 +32,7 @@
             
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Employee Salaries Details</h4>
+                        <h4 class="card-title">All Academy Details</h4>
                         <!-- <h4 class="card-title">
                             <button class="btn btn-primary mb-2"> <a href="{{ route('ManageEmployeeSalary') }}" class="text-decoration-none text-white">Add More</a> </button>
                         </h4> -->

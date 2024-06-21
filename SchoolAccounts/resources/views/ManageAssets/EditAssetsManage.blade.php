@@ -41,7 +41,7 @@
 
                                 <div class="row"> 
                                     <div class="col">
-                                        <label>Expense Category:</label>
+                                        <label>Assets Category:</label>
                                         <select class="form-control" name="ExpenseCategory" id="sel1" required>
                                             <option value="{{ $ManageAssets->AssetID}}" selected>{{ $ManageAssets->CategoryName}}</option>
 

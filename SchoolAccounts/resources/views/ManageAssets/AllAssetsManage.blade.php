@@ -24,6 +24,7 @@
                             <h4 class="card-title">All Assets Details</h4>
                             <h4 class="card-title">
 
+                                <button class="btn btn-primary mb-2"> <a href="{{ route('PrintAllAssetsManage') }}" class="text-decoration-none text-white"> <i class="fa fa-print color-danger"></i> </a> </button>
                                 <button class="btn btn-primary mb-2"> <a href="{{ route('ManageAssetsCategory') }}" class="text-decoration-none text-white">Add More</a> </button>
 
                             </h4>
@@ -34,7 +35,8 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Expense Category</th>
+                                            <th scope="col">Invoice No</th>
+                                            <th scope="col">Assets Category</th>
                                             <th scope="col">Bank Account</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Amount</th>
@@ -49,7 +51,8 @@
                                         @foreach($ManageAssets as $Expense)
 
                                         <tr>
-                                            <td>{{ $LoopID++ }}</td>                                        
+                                            <td>{{ $LoopID++ }}</td>
+                                            <td>{{ $Expense->id }}</td>
                                             <td>{{ $Expense->CategoryName }}</td>
                                             <td>{{ $Expense->BankName }}</td>
                                             <td>{{ $Expense->Date }}</td>
@@ -60,6 +63,9 @@
                                                 <span>
                                                     <a href="{{ route('EditAssetsManage', $Expense->UniqueCode) }}" class="mr-4" data-toggle="tooltip" data-placement="top" title="Edit">
                                                         <i class="fa fa-pencil color-muted"></i> 
+                                                    </a>
+                                                    <a href="{{ route('PrintAssetsInvoice', $Expense->UniqueCode) }}" class="mr-4" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                        <i class="fa fa-print color-danger"></i>
                                                     </a>
                                                     <a href="{{ route('DropAssetsManage', $Expense->UniqueCode) }}" data-toggle="tooltip" data-placement="top" title="Close">
                                                         <i class="fa fa-close color-danger"></i>

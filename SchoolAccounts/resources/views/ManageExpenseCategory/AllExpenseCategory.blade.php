@@ -32,7 +32,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Exepnse Name</th>
+                                            <th scope="col">Head Of Expense</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
